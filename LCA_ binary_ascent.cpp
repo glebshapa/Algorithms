@@ -39,40 +39,41 @@ void indent() {
     cerr << "\n\n\n";
 }
 
-vector<ll> g[N];
+vector<ll> gr[N], h(N);
+ll lg = 20;
+ll up[100001][21];
 
-ll n, l;
-vector<ll> tin, tout;
-ll timer;
-vector < vector<ll> > up;
-
-void dfs (ll v, ll p = 0) {
-	tin[v] = ++timer;
-	up[v][0] = p;
-	for (int i = 1; i <= l; i++)
-		up[v][i] = up[up[v][i - 1]][i - 1];
-
-    for (auto to : g[v]) {
-        if (to != p)
-            dfs(to, v);
-    }
-
-	tout[v] = ++timer;
+void dfs(ll v, ll p, ll hi) {
+    h[v] = hi;
+    up[v][0] = p;
+    for (int i = 1; i <= lg; i++)
+        up[v][i] = up[up[v][i - 1]][i - 1];
+    for (auto x : gr[v])
+        if (x != p)
+            dfs(x, v, hi + 1);
 }
 
 bool upper (ll a, ll b) {
-	return tin[a] <= tin[b] && tout[a] >= tout[b];
+    ll r = h[b] - h[a];
+    for (int i = lg; i >= 0; i--) {
+        if (r >= (1 << i)) {
+            r -= (1 << i);
+            b = up[b][i];
+        }
+    }
+    return a == b;
 }
 
-ll lca (ll a, ll b) {
-	if(upper(a, b))
+ll lca(ll a, ll b) {
+    if (upper(a, b))
         return a;
-	if (upper(b, a))
+    if (upper(b, a))
         return b;
-	for (int i = l; i >= 0; i--)
-		if (!upper(up[a][i], b))
-			a = up[a][i];
-	return up[a][0];
+    for (int i = lg; i >= 0; i--) {
+        if (!upper(up[a][i], b))
+            a = up[a][i];
+    }
+    return up[a][0];
 }
 
 void Solve() {
@@ -82,29 +83,22 @@ void Solve() {
         ll l, r;
         cin >> l >> r;
         l--; r--;
-        g[l].pb(r);
-        g[r].pb(l);
+        gr[l].pb(r);
+        gr[r].pb(l);
     }
+    indent();
+    dfs(0, 0, 0);
 
-    tin.resize(n);
-    tout.resize(n);
-    up.resize(n);
-	l = 1;
-	while ((1<<l) <= n)
-        l++;
-	for (int i=0; i<n; ++i)
-        up[i].resize(l + 1);
-	dfs(0);
-
-	ll m;
-	cin >> m;
-	for (int i = 0; i < m; i++) {
-		int a, b;
-		cin >> a >> b;
-		a--; b--;
-		cout << lca (a, b) + 1 << '\n';
-	}
+    ll m;
+    cin >> m;
+    for (int i = 0; i < m; i++) {
+        ll a, b;
+        cin >> a >> b;
+        a--; b--;
+        cout << lca(a, b) + 1 << endl;
+    }
 }
+
 
 int main() {
     ios::sync_with_stdio(0);
