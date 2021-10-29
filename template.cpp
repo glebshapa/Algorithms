@@ -3,9 +3,13 @@
 #include <ext/pb_ds/tree_policy.hpp>
 #include <ext/rope>
 
-//#pragma GCC optimize("Ofast")
-//#pragma GCC optimize("unroll-loops")
-//#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,tune=native")
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("no-stack-protector")
+#pragma GCC optimize("unroll-loops")
+#pragma GCC optimize("unswitch-loops")
+#pragma GCC optimize("fast-math")
+#pragma GCC optimize("rename-registers")
 
 #define fi first
 #define se second
